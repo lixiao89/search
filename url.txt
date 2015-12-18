@@ -1,0 +1,16 @@
+https://en.wikipedia.org/wiki/Logistic_regression
+http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch12.pdf
+https://onlinecourses.science.psu.edu/stat504/node/149
+http://www.ats.ucla.edu/stat/r/dae/logit.htm
+http://www.ats.ucla.edu/stat/stata/dae/logit.htm
+http://statpages.org/logistic.html
+https://www.medcalc.org/manual/logistic_regression.php
+http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html
+http://www.biostathandbook.com/simplelogistic.html
+http://www.r-bloggers.com/how-to-perform-a-logistic-regression-in-r/
+https://cran.r-project.org/web/packages/HSAUR/vignettes/Ch_logistic_regression_glm.pdf
+http://vassarstats.net/logreg1.html
+http://ww2.coastal.edu/kingw/statistics/R-tutorials/logistic.html
+http://www.r-tutor.com/elementary-statistics/logistic-regression/estimated-logistic-regression-equation
+http://www.r-tutor.com/elementary-statistics/logistic-regression
+https://www.youtube.com/watch?v=zAULhNrnuL4
