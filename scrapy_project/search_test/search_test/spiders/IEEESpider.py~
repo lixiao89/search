@@ -1,0 +1,11 @@
+import scrapy
+
+class IEEESpider(scrapy.Spider):
+    name = "IEEE"
+    allowed_domains = ["http://www.cs.berkeley.edu"]
+    start_urls = ["http://www.cs.berkeley.edu/~pabbeel/"]
+
+    def parse(self, response):
+        filename = response.url.split("/")[-2] + '.html'
+        with open(filename, 'wb') as f:
+            f.write(response.body)
