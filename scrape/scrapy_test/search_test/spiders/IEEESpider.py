@@ -2,6 +2,9 @@ import scrapy
 from selenium import webdriver
 import time
 import os.path
+from search_test.items import IEEEItem
+from scrapy.exceptions import CloseSpider
+import sys
 
 class IEEESpider(scrapy.Spider):
     name = "IEEE"
@@ -20,8 +23,9 @@ class IEEESpider(scrapy.Spider):
         if os.path.isfile(self.filename):
             os.remove(self.filename)
 
-        #self.browser.find_element_by_xpath('//*[@id="rows-per-page"]/option[contains(text(),"100")]').click()
-            
+        self.browser.find_element_by_xpath('//*[@id="rows-per-page"]/option[contains(text(),"100")]').click()
+        self.items = []
+        
             
     def parse(self, response):
 
@@ -35,19 +39,29 @@ class IEEESpider(scrapy.Spider):
                 time.sleep(5)
                 yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
             except:
-                break
-        
+                break          
 
     def parse_dir_contents(self, response):
 
         titles = response.xpath('//h3/a/span/text()').extract() 
-        with open(self.filename, 'a') as f:
-            for title in titles:
-                f.write(str(self.title_count) + '. ')
-                f.write(title + '\n')
-                f.write("\n")
-                self.title_count += 1
+       
+        # -- write to item object ---
         
+        for title in titles:
+           item = IEEEItem()
+           item['title'] = str(self.title_count) + ". " + title
+           self.title_count += 1
+           self.items.append(item)
+
+        if len(self.items) > 200:
+            with open(self.filename,'wb') as f:
+                for item_temp in self.items:
+                    #f.write(str(self.title_count) + '. ')
+                    f.write(str(item_temp) + '\n')
+                    f.write("\n")
+
+           
+               
                     
                     
                     
