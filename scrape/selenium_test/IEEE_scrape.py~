@@ -1,0 +1,4 @@
+from selenium import webdriver
+
+path_to_chromedriver = 'chromedriver'
+brower = webdriver.Chrome(executable_path = path_to_chromedriver)

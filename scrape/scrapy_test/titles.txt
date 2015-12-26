@@ -1,0 +1,188 @@
+1. Multi-robot grasp planning for sequential assembly operations
+
+2. Large deflection shape sensing of a continuum manipulator for minimally-invasive surgery
+
+3. Magneto-Rheological actuators for haptic devices: Design, modeling, control, and validation of a prototype clutch
+
+4. Reliable and lightweight primary flight control actuation using magneto-rheological clutches in slippage
+
+5. The Arched Flexure VSA: A compact variable stiffness actuator with large stiffness range
+
+6. Six-stator spherical induction motor for balancing mobile robots
+
+7. Torsion MACCEPA: A novel compact compliant actuator designed around the drive axis
+
+8. Passively adjustable gear based on twisted string actuator: Concept, model and evaluation
+
+9. Design investigation of a coreless tubular linear generator for a Moball: A spherical exploration robot with wind-energy harvesting capability
+
+10. Selective stiffening of soft actuators based on jamming
+
+11. Investigation of self-healing compliant actuators for robotics
+
+12. Sensory substitution of force and torque using 6-DoF tangential and normal skin deformation feedback
+
+13. Design and experimental evaluation of a skin-stretch haptic device for improved control of brain-computer interfaces
+
+14. Interactive haptic simulation of tooth extraction by a constraint-based haptic rendering approach
+
+15. Input-to-state stable approach to release the conservatism of passivity-based stable haptic interaction
+
+16. Smooth transition-based control of encounter-type haptic devices
+
+17. Antagonistic muscle based robot control for physical interactions
+
+18. Measurement of shear and slip with a GelSight tactile sensor
+
+19. Cartesian task allocation for cooperative, multilateral teleoperation under time delay
+
+20. A force-based bilateral teleoperation framework for aerial robots in contact with the environment
+
+21. Qualitative analysis of POMDPs with temporal logic specifications for robotics applications
+
+22. Safety control of robots under Computed Torque control using reachable sets
+
+23. Let's talk: Autonomous conflict resolution for robots carrying out individual high-level tasks in a shared workspace
+
+24. Towards manipulation planning with temporal logic specifications
+
+25. Automatic design of discreet discrete filters
+
+1. Multi-robot grasp planning for sequential assembly operations
+
+2. Large deflection shape sensing of a continuum manipulator for minimally-invasive surgery
+
+3. Magneto-Rheological actuators for haptic devices: Design, modeling, control, and validation of a prototype clutch
+
+4. Reliable and lightweight primary flight control actuation using magneto-rheological clutches in slippage
+
+5. The Arched Flexure VSA: A compact variable stiffness actuator with large stiffness range
+
+6. Six-stator spherical induction motor for balancing mobile robots
+
+7. Torsion MACCEPA: A novel compact compliant actuator designed around the drive axis
+
+8. Passively adjustable gear based on twisted string actuator: Concept, model and evaluation
+
+9. Design investigation of a coreless tubular linear generator for a Moball: A spherical exploration robot with wind-energy harvesting capability
+
+10. Selective stiffening of soft actuators based on jamming
+
+11. Investigation of self-healing compliant actuators for robotics
+
+12. Sensory substitution of force and torque using 6-DoF tangential and normal skin deformation feedback
+
+13. Design and experimental evaluation of a skin-stretch haptic device for improved control of brain-computer interfaces
+
+14. Interactive haptic simulation of tooth extraction by a constraint-based haptic rendering approach
+
+15. Input-to-state stable approach to release the conservatism of passivity-based stable haptic interaction
+
+16. Smooth transition-based control of encounter-type haptic devices
+
+17. Antagonistic muscle based robot control for physical interactions
+
+18. Measurement of shear and slip with a GelSight tactile sensor
+
+19. Cartesian task allocation for cooperative, multilateral teleoperation under time delay
+
+20. A force-based bilateral teleoperation framework for aerial robots in contact with the environment
+
+21. Qualitative analysis of POMDPs with temporal logic specifications for robotics applications
+
+22. Safety control of robots under Computed Torque control using reachable sets
+
+23. Let's talk: Autonomous conflict resolution for robots carrying out individual high-level tasks in a shared workspace
+
+24. Towards manipulation planning with temporal logic specifications
+
+25. Automatic design of discreet discrete filters
+
+26. Pareto efficiency in synthesizing shared autonomy policies with temporal logic constraints
+
+27. Dynamics-driven adaptive abstraction for reactive high-level mission and motion planning
+
+28. The exponential map for the group of similarity transformations and applications to motion interpolation
+
+29. Task scheduling for mobile robots using interval algebra
+
+30. Control of stochastic unicycle-type robots
+
+31. Attitude control for an Hybrid Unmanned Aerial Underwater Vehicle: A robust switched strategy with global stability
+
+32. Cooperative localization by factor composition over a faulty low-bandwidth communication channel
+
+33. Chance-constrained target tracking for mobile robots
+
+34. Adapting to performance variations in multi-robot coverage
+
+35. Conservative to confident: Treating uncertainty robustly within Learning-Based Control
+
+36. Robust stabilization of rigid body attitude motion in the presence of a stochastic input torque
+
+37. Efficient distributed multi-robot localization: A target tracking inspired design
+
+38. Unified passivity-based Cartesian force/impedance control for rigid and flexible joint robots via task-energy tanks
+
+39. An invariant Linear Quadratic Gaussian controller for a simplified car
+
+40. Intention-aware online POMDP planning for autonomous driving in a crowd
+
+41. Self-triggered collision avoidance control for multi-vehicle systems
+
+42. Vehicle state prediction for outdoor autonomous high-speed off-road UGVs
+
+43. Leveraged non-stationary Gaussian process regression for autonomous robot navigation
+
+44. Location utility-based map reduction
+
+45. 45. Autonomous underwater panel operation by GIRONA500 UVMS: A practical approach to autonomous underwater manipulation
+
+46. Towards real-time under-ice acoustic navigation at mesoscale ranges
+
+47. Active drifters: Towards a practical multi-robot system for ocean monitoring
+
+48. Backstepping control with energy reduction for an over-actuated marine platform
+
+49. Coactive learning with a human expert for robotic information gathering
+
+50. Autonomous Underwater Vehicle localization in a spatiotemporally varying water current field
+
+51. Articulating minimally invasive ultrasonic tool for robotics-assisted surgery
+
+52. Force control for tissue tensioning in precise robotic laser surgery
+
+53. MRI compatibility of lower-extremity motion simulator: LoMS
+
+54. Photoacoustic image guidance for robot-assisted skull base surgery
+
+55. Surgical tool pose estimation from monocular endoscopic videos
+
+56. Pneumatically driven handheld forceps with force display operated by motion sensor
+
+57. Tackling friction - an analytical modeling approach to understanding friction in single tendon driven continuum manipulators
+
+58. Tracking a magnetically guided catheter with a single rotating C-Arm
+
+59. Practical, stretchable smart skin sensors for contact-aware robots in safe and collaborative interactions
+
+60. An optimisation-based path planner for truck-trailer systems with driving direction changes
+
+61. Distance metric learning for RRT-based motion planning with constant-time inference
+
+62. The Dynamics Projection Filter (DPF) - real-time nonlinear trajectory optimization using projection operators
+
+63. Motion planning of drifting vehicle with friction model considering nonholonomic constraint
+
+64. Dynamic model and motion planning for a pendulum-actuated spherical rolling robot
+
+65. Fast, continuous state path smoothing to improve navigation accuracy
+
+66. Snakeboard motion planning with viscous friction and skidding
+
+67. A time-optimal bounded velocity path-following controller for generic Wheeled Mobile Robots
+
+68. Image-based control relying on conic curves foliation for passing through a gate
+
+69. Unsupervised robot learning to predict person motion
+

@@ -15,3 +15,11 @@
 7. pip install Scrapy
 
 8. pip install ipython (for scrapy commandline options)
+
+9. install Docker
+
+10. start docker http://blog.scrapinghub.com/2015/03/02/handling-javascript-in-scrapy-with-splash/
+
+11. Or use Selenium "pip install -U selenium"
+
+12. get chromedriver
