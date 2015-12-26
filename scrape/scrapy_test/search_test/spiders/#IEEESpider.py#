@@ -27,7 +27,6 @@ class IEEESpider(scrapy.Spider):
         if os.path.isfile(self.filename):
             os.remove(self.filename)
 
-        
         self.items = []
         
             
