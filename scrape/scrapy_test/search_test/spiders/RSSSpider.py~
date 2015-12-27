@@ -2,7 +2,7 @@ import scrapy
 from selenium import webdriver
 import time
 import os.path
-from search_test.items import MyItem
+from search_test.items import IEEEItem
 from scrapy.exceptions import CloseSpider
 import sys
 from pattern.web import URL
@@ -27,6 +27,7 @@ class IEEESpider(scrapy.Spider):
             
     def parse(self, response):
 
+        # if self.title_count == 1:
         yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
             
 
@@ -38,7 +39,7 @@ class IEEESpider(scrapy.Spider):
         # -- write to item object ---
         
         for title in titles:
-           item = MyItem()
+           item = IEEEItem()
            item['title'] = str(self.title_count) + ". " + title
            item['file_urls'] = ["https://lagunita.stanford.edu/c4x/HumanitiesScience/StatLearning/asset/linear_regression.pdf"]
            self.title_count += 1

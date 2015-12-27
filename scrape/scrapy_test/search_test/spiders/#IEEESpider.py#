@@ -8,6 +8,7 @@ import sys
 from pattern.web import URL
 
 
+
 class IEEESpider(scrapy.Spider):
     name = "IEEE"
     allowed_domains = ["ieeexplore.ieee.org"]
@@ -27,6 +28,7 @@ class IEEESpider(scrapy.Spider):
             
     def parse(self, response):
 
+        # if self.title_count == 1:
         yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
             
 
