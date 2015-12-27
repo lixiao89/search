@@ -61,10 +61,11 @@ NEWSPIDER_MODULE = 'search_test.spiders'
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'search_test.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'search_test.pipelines.SearchTestPipeline': 300,
+}
 
+FILES_STORE = '/Users/xiaoli/Desktop/search/scrape/scrapy_test/'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay

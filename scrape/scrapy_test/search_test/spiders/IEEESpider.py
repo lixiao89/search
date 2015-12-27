@@ -5,11 +5,13 @@ import os.path
 from search_test.items import IEEEItem
 from scrapy.exceptions import CloseSpider
 import sys
+from pattern.web import URL
+
 
 class IEEESpider(scrapy.Spider):
     name = "IEEE"
     allowed_domains = ["ieeexplore.ieee.org"]
-    start_urls = ["http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?&punumber%3D7128761%26filter%3DAND%28p_IS_Number%3A7138973%29%26rowsPerPage%3D100&searchWithin=learning&pageNumber=1&resultAction=REFINE"]
+    start_urls = ["http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=7128761"]
 
     def __init__(self):
         path_to_chromedriver = '/Users/xiaoli/Desktop/search/scrape/selenium_test/chromedriver'
@@ -27,24 +29,21 @@ class IEEESpider(scrapy.Spider):
         if os.path.isfile(self.filename):
             os.remove(self.filename)
 
-        
         self.items = []
-        
+
             
     def parse(self, response):
 
-        if self.title_count == 1:
-            self.parse_dir_contents(response)
+        # if self.title_count == 1:
+        yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
             
-        while True:
-            try:
-                next = self.browser.find_element_by_xpath("//a[@aria-label='Pagination Next Page']")
-                next.click()
-                time.sleep(5)
-                yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
-            except:
-                break          
+        # else:
+        #     next = self.browser.find_element_by_xpath("//a[@aria-label='Pagination Next Page']")
+        #     next.click()
+        #     time.sleep(5)
+        #     yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
 
+            
     def parse_dir_contents(self, response):
 
         titles = response.xpath('//h3/a/span/text()').extract() 
@@ -56,13 +55,15 @@ class IEEESpider(scrapy.Spider):
            item['title'] = str(self.title_count) + ". " + title
            self.title_count += 1
            self.items.append(item)
+           yield item
+           
+        # recursively go to next page
 
-        if len(self.items) > 50: # why is this essential
-            with open(self.filename,'wb') as f:
-                for item_temp in self.items:
-                    f.write(str(item_temp) + '\n') # why can't i use item_temp['title']
-                    f.write("\n")
-
+        next = self.browser.find_element_by_xpath("//a[@aria-label='Pagination Next Page']")
+        next.click()
+        time.sleep(5)
+        yield scrapy.Request( self.browser.current_url, callback=self.parse_dir_contents)
+   
            
                
                     

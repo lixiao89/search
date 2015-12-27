@@ -1,0 +1,200 @@
+{"title": "1. The Extended Velocity Obstacle and applying ORCA in the real world"}
+{"title": "2. Neural-based underwater spherical object localization through electrolocation"}
+{"title": "3. Safe trajectory planning for multiple aerial vehicles with Segmentation-adaptive Pseudospectral collocation"}
+{"title": "4. Decentralized cooperative mean approach to collision avoidance for nonholonomic mobile robots"}
+{"title": "5. Efficient mixed-integer planning for UAVs in cluttered environments"}
+{"title": "6. Reactive avoidance using embedded stereo vision for MAV flight"}
+{"title": "7. PhongPD: Gradient-continuous penetration metric for polygonal models using Phong projection"}
+{"title": "8. Fast collision detection through bounding volume hierarchies in workspace-time space for sampling-based motion planners"}
+{"title": "9. Structured low-rank matrix approximation in Gaussian process regression for autonomous robot navigation"}
+{"title": "10. Incremental dense semantic stereo fusion for large-scale semantic scene reconstruction"}
+{"title": "11. Inverse depth for accurate photometric and geometric error minimisation in RGB-D dense visual odometry"}
+{"title": "12. Work smart, not hard: Recalling relevant experiences for vast-scale but time-constrained localisation"}
+{"title": "13. A primal-dual framework for real-time dense RGB-D scene flow"}
+{"title": "14. Fast dense stereo correspondences by binary locality sensitive hashing"}
+{"title": "15. Continuous on-board monocular-vision-based elevation mapping applied to autonomous landing of micro aerial vehicles"}
+{"title": "16. Depth-based tracking with physical constraints for robot manipulation"}
+{"title": "17. Sequence-level object candidates based on saliency for generic object recognition on mobile systems"}
+{"title": "18. Too much TV is bad: Dense reconstruction from sparse laser with non-convex regularisation"}
+{"title": "19. Modeling and closed-loop control of electromagnetic manipulation of a microparticle"}
+{"title": "20. First demonstration of a modular and reconfigurable magnetic-manipulation system"}
+{"title": "21. Learning contact-rich manipulation skills with guided policy search"}
+{"title": "22. Whole-body multi-modal semi-autonomous teleoperation of mobile manipulator systems"}
+{"title": "23. Decentralized object transportation by two nonholonomic mobile robots exploiting only implicit communication"}
+{"title": "24. Learning force-based manipulation of deformable objects from multiple demonstrations"}
+{"title": "25. Accurate garment surface analysis using an active stereo robot head with application to dual-arm flattening"}
+{"title": "26. Multi-robot grasp planning for sequential assembly operations"}
+{"title": "27. Large deflection shape sensing of a continuum manipulator for minimally-invasive surgery"}
+{"title": "28. Magneto-Rheological actuators for haptic devices: Design, modeling, control, and validation of a prototype clutch"}
+{"title": "29. Reliable and lightweight primary flight control actuation using magneto-rheological clutches in slippage"}
+{"title": "30. The Arched Flexure VSA: A compact variable stiffness actuator with large stiffness range"}
+{"title": "31. Six-stator spherical induction motor for balancing mobile robots"}
+{"title": "32. Torsion MACCEPA: A novel compact compliant actuator designed around the drive axis"}
+{"title": "33. Passively adjustable gear based on twisted string actuator: Concept, model and evaluation"}
+{"title": "34. Design investigation of a coreless tubular linear generator for a Moball: A spherical exploration robot with wind-energy harvesting capability"}
+{"title": "35. Selective stiffening of soft actuators based on jamming"}
+{"title": "36. Investigation of self-healing compliant actuators for robotics"}
+{"title": "37. Sensory substitution of force and torque using 6-DoF tangential and normal skin deformation feedback"}
+{"title": "38. Design and experimental evaluation of a skin-stretch haptic device for improved control of brain-computer interfaces"}
+{"title": "39. Interactive haptic simulation of tooth extraction by a constraint-based haptic rendering approach"}
+{"title": "40. Input-to-state stable approach to release the conservatism of passivity-based stable haptic interaction"}
+{"title": "41. Smooth transition-based control of encounter-type haptic devices"}
+{"title": "42. Antagonistic muscle based robot control for physical interactions"}
+{"title": "43. Measurement of shear and slip with a GelSight tactile sensor"}
+{"title": "44. Cartesian task allocation for cooperative, multilateral teleoperation under time delay"}
+{"title": "45. A force-based bilateral teleoperation framework for aerial robots in contact with the environment"}
+{"title": "46. Qualitative analysis of POMDPs with temporal logic specifications for robotics applications"}
+{"title": "47. Safety control of robots under Computed Torque control using reachable sets"}
+{"title": "48. Let's talk: Autonomous conflict resolution for robots carrying out individual high-level tasks in a shared workspace"}
+{"title": "49. Towards manipulation planning with temporal logic specifications"}
+{"title": "50. Automatic design of discreet discrete filters"}
+{"title": "51. Pareto efficiency in synthesizing shared autonomy policies with temporal logic constraints"}
+{"title": "52. Dynamics-driven adaptive abstraction for reactive high-level mission and motion planning"}
+{"title": "53. The exponential map for the group of similarity transformations and applications to motion interpolation"}
+{"title": "54. Task scheduling for mobile robots using interval algebra"}
+{"title": "55. Control of stochastic unicycle-type robots"}
+{"title": "56. Attitude control for an Hybrid Unmanned Aerial Underwater Vehicle: A robust switched strategy with global stability"}
+{"title": "57. Cooperative localization by factor composition over a faulty low-bandwidth communication channel"}
+{"title": "58. Chance-constrained target tracking for mobile robots"}
+{"title": "59. Adapting to performance variations in multi-robot coverage"}
+{"title": "60. Conservative to confident: Treating uncertainty robustly within Learning-Based Control"}
+{"title": "61. Robust stabilization of rigid body attitude motion in the presence of a stochastic input torque"}
+{"title": "62. Efficient distributed multi-robot localization: A target tracking inspired design"}
+{"title": "63. Unified passivity-based Cartesian force/impedance control for rigid and flexible joint robots via task-energy tanks"}
+{"title": "64. An invariant Linear Quadratic Gaussian controller for a simplified car"}
+{"title": "65. Intention-aware online POMDP planning for autonomous driving in a crowd"}
+{"title": "66. Self-triggered collision avoidance control for multi-vehicle systems"}
+{"title": "67. Vehicle state prediction for outdoor autonomous high-speed off-road UGVs"}
+{"title": "68. Leveraged non-stationary Gaussian process regression for autonomous robot navigation"}
+{"title": "69. Location utility-based map reduction"}
+{"title": "70. Autonomous robotic exploration using occupancy grid maps and graph SLAM based on Shannon and R\u00e9nyi Entropy"}
+{"title": "71. Reliable kinect-based navigation in large indoor environments"}
+{"title": "72. Reducing FPGA algorithm area by avoiding redundant computation"}
+{"title": "73. Communication-constrained multi-AUV cooperative SLAM"}
+{"title": "74. Autonomous sampling of water columns using gliding robotic fish: Control algorithms and field experiments"}
+{"title": "75. On autonomous cooperative Underwater Floating Manipulation Systems"}
+{"title": "76. Autonomous underwater panel operation by GIRONA500 UVMS: A practical approach to autonomous underwater manipulation"}
+{"title": "77. Towards real-time under-ice acoustic navigation at mesoscale ranges"}
+{"title": "78. Active drifters: Towards a practical multi-robot system for ocean monitoring"}
+{"title": "79. Backstepping control with energy reduction for an over-actuated marine platform"}
+{"title": "80. Coactive learning with a human expert for robotic information gathering"}
+{"title": "81. Autonomous Underwater Vehicle localization in a spatiotemporally varying water current field"}
+{"title": "82. Articulating minimally invasive ultrasonic tool for robotics-assisted surgery"}
+{"title": "83. Force control for tissue tensioning in precise robotic laser surgery"}
+{"title": "84. MRI compatibility of lower-extremity motion simulator: LoMS"}
+{"title": "85. Photoacoustic image guidance for robot-assisted skull base surgery"}
+{"title": "86. Surgical tool pose estimation from monocular endoscopic videos"}
+{"title": "87. Pneumatically driven handheld forceps with force display operated by motion sensor"}
+{"title": "88. Tackling friction - an analytical modeling approach to understanding friction in single tendon driven continuum manipulators"}
+{"title": "89. Tracking a magnetically guided catheter with a single rotating C-Arm"}
+{"title": "90. Practical, stretchable smart skin sensors for contact-aware robots in safe and collaborative interactions"}
+{"title": "91. An optimisation-based path planner for truck-trailer systems with driving direction changes"}
+{"title": "92. Distance metric learning for RRT-based motion planning with constant-time inference"}
+{"title": "93. The Dynamics Projection Filter (DPF) - real-time nonlinear trajectory optimization using projection operators"}
+{"title": "94. Motion planning of drifting vehicle with friction model considering nonholonomic constraint"}
+{"title": "95. Dynamic model and motion planning for a pendulum-actuated spherical rolling robot"}
+{"title": "96. Fast, continuous state path smoothing to improve navigation accuracy"}
+{"title": "97. Snakeboard motion planning with viscous friction and skidding"}
+{"title": "98. A time-optimal bounded velocity path-following controller for generic Wheeled Mobile Robots"}
+{"title": "99. Image-based control relying on conic curves foliation for passing through a gate"}
+{"title": "100. Unsupervised robot learning to predict person motion"}
+{"title": "101. Multi-band Hough Forests for detecting humans with Reflective Safety Clothing from mobile machinery"}
+{"title": "102. Pedestrian detection with a Large-Field-Of-View deep network"}
+{"title": "103. SNAPCAT-3D: Calibrating networks of 3D range sensors for pedestrian tracking"}
+{"title": "104. Goal-oriented visual tracking of pedestrians with motion priors in semi-crowded scenes"}
+{"title": "105. Person tracking and following with 2D laser scanners"}
+{"title": "106. Automatic initialization for skeleton tracking in optical motion capture"}
+{"title": "107. REACH - Realtime crowd tracking using a hybrid motion model"}
+{"title": "108. Augmenting physical state prediction through structured activity inference"}
+{"title": "109. End-tip speed maximization for noncyclic swing motion based on time reversal integral in multiple-joint robots"}
+{"title": "110. Model-based feedforward position control of constant curvature continuum robots using feedback linearization"}
+{"title": "111. Generalized projector for task priority transitions during hierarchical control"}
+{"title": "112. A model predictive control approach for the Partner Ballroom Dance Robot"}
+{"title": "113. Passivity of virtual free-floating dynamics rendered on robotic facilities"}
+{"title": "114. A comparison of braking strategies for elastic joint robots"}
+{"title": "115. Robotic manipulation of micro/nanoparticles using optical tweezers with velocity constraints and stochastic perturbations"}
+{"title": "116. Robotic manipulation of a biological cell using multiple optical traps"}
+{"title": "117. Novel pairwise coupled kinematic solution for algebraic angular acceleration estimation of serial link manipulators"}
+{"title": "118. A mobile self-leveling landing platform for VTOL UAVs"}
+{"title": "119. Parallel elastic actuation for efficient large payload locomotion"}
+{"title": "120. Prototype design of medical round supporting robot \u201cTerapio\u201d"}
+{"title": "121. Using parallel stiffness to achieve improved locomotive efficiency with the Sandia STEPPR robot"}
+{"title": "122. Harmonic analysis of a PZT poly-actuator"}
+{"title": "123. Damping control of variable damping compliant actuators"}
+{"title": "124. Cylindrical cam mechanism for unlimited subsequent spring recruitment in Series-Parallel Elastic Actuators"}
+{"title": "125. Differential dynamic programming for optimal estimation"}
+{"title": "126. Design, identification and experimental testing of a light-weight flexible-joint arm for aerial physical interaction"}
+{"title": "127. PlanIt: A crowdsourcing approach for learning to plan paths from large scale preference feedback"}
+{"title": "128. Predicting human reaching motion in collaborative tasks using Inverse Optimal Control and iterative re-planning"}
+{"title": "129. Speeding up heuristic computation in planning with Experience Graphs"}
+{"title": "130. Experience-based planning with sparse roadmap spanners"}
+{"title": "131. A novel approach to dynamic movement imitation based on quadratic programming"}
+{"title": "132. Lazy validation of Experience Graphs"}
+{"title": "133. Towards a data-driven approach to human preferences in motion planning"}
+{"title": "134. Toward a real-time framework for solving the kinodynamic motion planning problem"}
+{"title": "135. A non-rigid point and normal registration algorithm with applications to learning from demonstrations"}
+{"title": "136. Encoderless position control of a two-link robot manipulator"}
+{"title": "137. Automated robotic manipulation of individual sub-micro particles using a dual probe setup inside the scanning electron microscope"}
+{"title": "138. Modelling and control of optical manipulation for cell rotation"}
+{"title": "139. Detection of contact force transients in robotic assembly"}
+{"title": "140. Supervisors and their simplification in automated manufacturing systems via Petri nets"}
+{"title": "141. Design, modeling and control of a modular contactless wafer handling system"}
+{"title": "142. Integrated path planning and power management for solar-powered unmanned ground vehicles"}
+{"title": "143. Injected 3D electrical traces in additive manufactured parts with low melting temperature metals"}
+{"title": "144. An automated robotic system for high-speed microinjection of Caenorhabditis elegans"}
+{"title": "145. Design and evaluation of the Bi-directional Clutched Parallel Elastic Actuator (BIC-PEA)"}
+{"title": "146. On the role of robot configuration in Cartesian stiffness control"}
+{"title": "147. A clutch mechanism for switching between position and stiffness control of a variable stiffness actuator"}
+{"title": "148. Design and control of a novel multi-state compliant safe joint for robotic surgery"}
+{"title": "149. Use of the nonlinear observability rank condition for improved parametric estimation"}
+{"title": "150. A comparison of series and parallel elasticity in a monoped hopper"}
+{"title": "151. SEA force/torque servo control with model-based robust motion control and link-side motion feedback"}
+{"title": "152. Design principle of wing rotational hinge stiffness"}
+{"title": "153. Directional efficiency in geared transmissions: Characterization of backdrivability towards improved proprioceptive control"}
+{"title": "154. Autonomous navigation of generic monocular quadcopter in natural environment"}
+{"title": "155. Efficient visual exploration and coverage with a micro aerial vehicle in unknown environments"}
+{"title": "156. Exploration and topological map building in unknown environments"}
+{"title": "157. Stigmergy at work: Planning and navigation for a service robot on an RFID floor"}
+{"title": "158. Multi-robot long-term persistent coverage with fuel constrained robots"}
+{"title": "159. Robot navigation using human cues: A robot navigation system for symbolic goal-directed exploration"}
+{"title": "160. Semantic representation for navigation in large-scale environments"}
+{"title": "161. Now or later? Predicting and maximising success of navigation actions from long-term experience"}
+{"title": "162. Automatic image scaling for place recognition in changing environments"}
+{"title": "163. Flow feature extraction for underwater robot localization: Preliminary results"}
+{"title": "164. A multi-level motion controller for low-cost Underwater Gliders"}
+{"title": "165. Building 3D mosaics from an Autonomous Underwater Vehicle, Doppler velocity log, and 2D imaging sonar"}
+{"title": "166. Predictive motion planning for AUVs subject to strong time-varying currents and forecasting uncertainties"}
+{"title": "167. Online path planning for autonomous underwater vehicles in unknown environments"}
+{"title": "168. Locomotion and elastodynamics model of an underwater shell-like soft robot"}
+{"title": "169. Underwater electric current communication of robotic fish: Design and experimental results"}
+{"title": "170. Computationally efficient underwater navigational strategy in electrically heterogeneous environments using electrolocation"}
+{"title": "171. Vision-based 3D motion reconstruction of octopus arm swimming and comparison with an 8-arm underwater robot"}
+{"title": "172. Toward tissue penetration by MRI-powered millirobots using a self-assembled Gauss gun"}
+{"title": "173. A spherical-magnet end-effector for robotic magnetic manipulation"}
+{"title": "174. A miniaturised robotic probe for real-time intraoperative fusion of ultrasound and endomicroscopy"}
+{"title": "175. Learning by observation for surgical subtasks: Multilateral cutting of 3D viscoelastic and 2D Orthotropic Tissue Phantoms"}
+{"title": "176. An ankle-foot prosthesis emulator with control of plantarflexion and inversion-eversion torque"}
+{"title": "177. A virtual sensor for needle deflection estimation during soft-tissue needle insertion"}
+{"title": "178. Design of two lightweight, high-bandwidth torque-controlled ankle exoskeletons"}
+{"title": "179. Feasibility study of a slack enabling actuator for actuating tendon-driven soft wearable robot without pretension"}
+{"title": "180. Feed forward incision control for laser microsurgery of soft tissue"}
+{"title": "181. Planning for decentralized control of multiple robots under uncertainty"}
+{"title": "182. When to do your own thing: Analysis of cost uncertainties in multi-robot task allocation at run-time"}
+{"title": "183. Global connectivity control for spatially interacting multi-robot systems with unicycle kinematics"}
+{"title": "184. A distributed multi-robot approach for the detection and tracking of multiple dynamic anomalies"}
+{"title": "185. Robust model-free formation control with prescribed performance for nonlinear multi-agent systems"}
+{"title": "186. Decentralized algorithms for 3D symmetric formations in robotic networks - a contraction theory approach"}
+{"title": "187. Distributed centroid estimation and motion controllers for collective transport by multi-robot systems"}
+{"title": "188. Stochastic Tree Search with Useful Cycles for patrolling problems"}
+{"title": "189. Efficient RGB-D object categorization using cascaded ensembles of randomized decision trees"}
+{"title": "190. Decision making under uncertain segmentations"}
+{"title": "191. Automatic bleeding frame detection in the wireless capsule endoscopy images"}
+{"title": "192. Real-time grasp detection using convolutional neural networks"}
+{"title": "193. Salient regions detection for indoor robots using RGB-D data"}
+{"title": "194. RGB-D object recognition and pose estimation based on pre-trained convolutional neural network features"}
+{"title": "195. A fixed-dimensional 3D shape representation for matching partially observed objects in street scenes"}
+{"title": "196. Simultaneous localization, mapping, and manipulation for unsupervised object discovery"}
+{"title": "197. Grasping surfaces of revolution: Simultaneous pose and shape recovery from two views"}
+{"title": "198. A scalable approach for understanding the visual structures of hand grasps"}
+{"title": "199. Active online confidence boosting for efficient object classification"}
+{"title": "200. Affordance detection of tool parts from geometric features"}
