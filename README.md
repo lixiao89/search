@@ -23,3 +23,5 @@
 11. Or use Selenium "pip install -U selenium"
 
 12. get chromedriver
+
+13. pdfminer: python setup.py install 
