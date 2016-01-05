@@ -24,4 +24,10 @@
 
 12. get chromedriver
 
-13. pdfminer: python setup.py install 
+13. pdfminer: python setup.py install
+
+14. pip install mendeley (pip install -r requirements.txt)
+
+15. pip install flask
+
+note: 14 and 15 are for mendeley web interface development
