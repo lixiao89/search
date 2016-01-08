@@ -1,0 +1,120 @@
+[19] policies that act directly on the state (i.e. ot = xt).
+ While this method is not as general as policy gradient
+RL algorithms, which can optimize arbitrary parameterized
+[18] or using dual variables [22]. Convergence to a policy
+ πθ(ut|ot) that minimizes expected cost can be shown by
+casting this alternating optimization as a relaxation of a
+[1] P. Abbeel, A. Coates, M. Quigley, and A. Ng, “An application of
+ reinforcement learning to aerobatic helicopter ﬂight,” in Advances in
+Neural Information Processing Systems (NIPS), 2006.
+[2] K. Alexis, G. Nikolakopoulos, and A. Tzes, “Model predictive quadro-
+ tor control: attitude, altitude and position experimental studies,” Con-
+trol Theory Applications, IET, vol. 6, no. 12, pp. 1812–1827, Aug
+[3] F. Augugliaro, A. P. Schoellig, and R. D’Andrea, “Generation of
+ collision-free trajectories for a quadrocopter ﬂeet: A sequential convex
+programming approach,” in International Conference on Intelligent
+[29] P. Pastor, H. Hoffmann, T. Asfour, and S. Schaal, “Learning and
+ generalization of motor skills by learning from demonstration,” in
+International Conference on Robotics and Automation (ICRA), 2009.
+[30] J. Peters and S. Schaal, “Reinforcement learning of motor skills with
+ policy gradients,” Neural Networks, vol. 21, no. 4, pp. 682–697, 2008.
+[31] D. Pomerleau, “ALVINN: an autonomous land vehicle in a neural
+[32] G. V. Raffo, M. G. Ortega, and F. R. Rubio, “An integral predic-
+ tive/nonlinear control structure for a quadrotor helicopter,” Automatica,
+vol. 46, no. 1, pp. 29 – 39, 2010.
+[33] A. G. Richards, “Robust constrained model predictive control,” Ph.D.
+ 
+dissertation, Massachusetts Institute of Technology, 2004.
+[34] S. Ross, G. Gordon, and A. Bagnell, “A reduction of imitation learning
+ and structured prediction to no-regret online learning,” Journal of
+Machine Learning Research, vol. 15, pp. 627–635, 2011.
+[35] S. Ross, N. Melik-Barkhudarov, K. S. Shankar, A. Wendel, D. Dey,
+ J. A. Bagnell, and M. Hebert, “Learning monocular reactive UAV
+control in cluttered natural environments,” in International Conference
+[36] D. H. Shim, H. J. Kim, and S. Sastry, “Nonlinear model predictive
+ tracking control for rotorcraft-based unmanned aerial vehicles,” in
+American Control Conference (ACC), 2002.
+[37] Y. Tassa, T. Erez, and E. Todorov, “Synthesis and stabilization of com-
+ plex behaviors through online trajectory optimization,” in IEEE/RSJ
+International Conference on Intelligent Robots and Systems, 2012.
+[38] R. Tedrake, T. Zhang, and H. Seung, “Stochastic policy gradient rein-
+ forcement learning on a simple 3d biped,” in International Conference
+on Intelligent Robots and Systems (IROS), 2004.
+[39] E. Todorov, T. Erez, and Y. Tassa, “MuJoCo: A physics engine
+ for model-based control,” in IEEE/RSJ International Conference on
+Intelligent Robots and Systems, 2012.
+[4] P. Bouffard, A. Aswani, and C. Tomlin, “Learning-based model predic-
+ tive control on a quadrotor: Onboard implementation and experimental
+results,” in International Conference on Robotics and Automation
+[5] M. Deisenroth, G. Neumann, and J. Peters, “A survey on policy search
+ for robotics,” Foundations and Trends in Robotics, vol. 2, no. 1-2, pp.
+1–142, 2013.
+[6] M. Deisenroth, C. Rasmussen, and D. Fox, “Learning to control a
+ low-cost manipulator using data-efﬁcient reinforcement learning,” in
+Robotics: Science and Systems (RSS), 2011.
+[7] R. Deits and R. Tedrake, “Efﬁcient mixed-integer planning for UAVs
+ in cluttered environments,” in International Conference on Robotics
+and Automation (ICRA), 2015.
+[8] G. Endo, J. Morimoto, T. Matsubara, J. Nakanishi, and G. Cheng,
+ “Learning CPG-based biped locomotion with a policy gradient
+method: Application to a humanoid robot,” International Journal of
+[9] F. Fraundorfer, L. Heng, D. Honegger, G. Lee, L. Meier, P. Tanskanen,
+ and M. Pollefeys, “Vision-based autonomous mapping and exploration
+using a quadrotor mav,” in International Conference on Intelligent
+[10] T. Geng, B. Porr, and F. W¨org¨otter, “Fast biped walking with a
+ reﬂexive controller and realtime policy searching,” in Advances in
+Neural Information Processing Systems (NIPS), 2006.
+[11] L. Heng, L. Meier, P. Tanskanen, F. Fraundorfer, and M. Pollefeys,
+ “Autonomous obstacle avoidance and maneuvering on a vision-guided
+mav using on-board processing,” in International Conference on
+[12] K. J. Hunt, D. Sbarbaro, R. ˙Zbikowski, and P. J. Gawthrop, “Neural
+ networks for control systems: A survey,” Automatica, vol. 28, no. 6,
+pp. 1083–1112, Nov. 1992.
+[13] D. Jacobson and D. Mayne, Differential Dynamic Programming.
+ 
+Elsevier, 1970.
+[14] J. Kober, J. A. Bagnell, and J. Peters, “Reinforcement learning in
+ robotics: A survey,” International Journal of Robotic Research, vol. 32,
+no. 11, pp. 1238–1274, 2013.
+[15] J. Kober, E. Oztop, and J. Peters, “Reinforcement learning to adjust
+ robot movements to new situations,” in Robotics: Science and Systems
+(RSS), 2010.
+[16] N. Kohl and P. Stone, “Policy gradient reinforcement learning for fast
+ quadrupedal locomotion,” in International Conference on Robotics and
+Automation (IROS), 2004.
+[17] I. Lenz, R. Knepper, and A. Saxena, “Deepmpc: Learning deep
+ latent features for model predictive control,” in Robotics: Science and
+Systems (RSS), 2015.
+[18] S. Levine and P. Abbeel, “Learning neural network policies with
+ guided policy search under unknown dynamics,” in Advances in Neural
+Information Processing Systems (NIPS), 2014.
+[19] S. Levine and V. Koltun, “Guided policy search,” in International
+ 
+Conference on Machine Learning (ICML), 2013.
+[20] ——, “Learning complex neural network policies with trajectory opti-
+ mization,” in International Conference on Machine Learning (ICML),
+2014.
+[21] S. Levine, N. Wagener, and P. Abbeel, “Learning contact-rich manip-
+ ulation skills with guided policy search,” in International Conference
+on Robotics and Automation (ICRA), 2015.
+[22] S. Levine, C. Finn, T. Darrell, and P. Abbeel, “End-to-end training of
+ 
+deep visuomotor policies,” arXiv preprint arXiv:1504.00702, 2015.
+[23] W. Li and E. Todorov, “Iterative linear quadratic regulator design for
+ nonlinear biological movement systems,” in ICINCO (1), 2004, pp.
+222–229.
+[24] P. Martin and E. Salaun, “The true role of accelerometer feedback
+ in quadrotor control,” in International Conference on Robotics and
+Automation (ICRA), 2010.
+[25] D. Q. Mayne, M. M. Seron, and S. V. Rakovi´c, “Robust model predic-
+ tive control of constrained linear systems with bounded disturbances,”
+Automatica, vol. 41, no. 2, Feb. 2005.
+[26] V. Mnih, K. Kavukcuoglu, D. Silver, A. Graves, I. Antonoglou,
+ D. Wierstra, and M. Riedmiller, “Playing Atari with deep reinforce-
+ment learning,” NIPS ’13 Workshop on Deep Learning, 2013.
+[27] F. L. Mueller, A. P. Schoellig, and R. D’Andrea, “Iterative learning
+ of feed-forward corrections for high-performance tracking,” in Inter-
+national Conference on Intelligent Robots and Systems (IROS), 2012.
+[28] M. Mueller and R. D’Andrea, “A model predictive controller for
+ 
+

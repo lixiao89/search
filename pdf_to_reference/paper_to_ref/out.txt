@@ -1,0 +1,1522 @@
+Learning Deep Control Policies for Autonomous Aerial Vehicles with
+
+MPC-Guided Policy Search
+
+Tianhao Zhang, Gregory Kahn, Sergey Levine, Pieter Abbeel
+
+5
+1
+0
+2
+
+ 
+
+p
+e
+S
+2
+2
+
+ 
+
+ 
+ 
+]
+
+G
+L
+.
+s
+c
+[
+ 
+ 
+
+1
+v
+1
+9
+7
+6
+0
+
+.
+
+9
+0
+5
+1
+:
+v
+i
+X
+r
+a
+
+(MPC)
+
+Abstract— Model predictive control
+
+is an effec-
+tive method for controlling robotic systems, particularly au-
+tonomous aerial vehicles such as quadcopters. However, ap-
+plication of MPC can be computationally demanding, and
+typically requires estimating the state of the system, which
+can be challenging in complex, unstructured environments.
+Reinforcement learning can in principle forego the need for
+explicit state estimation and acquire a policy that directly
+maps sensor readings to actions, but is difﬁcult to apply to
+underactuated systems that are liable to fail catastrophically
+during training, before an effective policy has been found. We
+propose to combine MPC with reinforcement learning in the
+framework of guided policy search, where MPC is used to
+generate data at training time, under full state observations
+provided by an instrumented training environment. This data
+is used to train a deep neural network policy, which is
+allowed to access only the raw observations from the vehicle’s
+onboard sensors. After training, the neural network policy can
+successfully control the robot without knowledge of the full
+state, and at a fraction of the computational cost of MPC. We
+evaluate our method by learning obstacle avoidance policies for
+a simulated quadrotor, using simulated onboard sensors and no
+explicit state estimation at test time.
+
+I. INTRODUCTION
+
+Model predictive control (MPC) is an effective and re-
+liable method for controlling robotic systems, particularly
+autonomous aerial vehicles such as quadcopters, because of
+its robustness to moderate model errors [25], ability to use
+high-level objectives [39], and relative simplicity. However,
+applications of MPC can be computationally demanding, and
+typically require estimating the state of the system. The state
+estimation problem can be quite challenging in complex,
+unstructured environments. Reinforcement learning can in
+principle forego the need for explicit state estimation and
+acquire a policy that directly maps sensor readings to actions
+[5]. The power of reinforcement learning is derived from
+its ability to learn directly from the real-world behavior of
+the system. Unfortunately, this strength is also its major
+weakness when applied to underactuated, fragile systems
+such as aerial vehicles, which can be damaged beyond repair
+by an unsuccessful, partially trained policy (e.g. by crashing
+into an obstacle). While alternative learning methods, such
+as learning from demonstration [34], [35], can address this
+issue, they typically require costly additional information,
+such as guidance from a human expert.
+
+We propose to use an off-policy guided policy search
+algorithm in combination with a model predictive control
+
+Department of Electrical Engineering and Computer Science, University
+
+of California, Berkeley, Berkeley, CA 94709
+
+Fig. 1: Diagram of our method:
+the training phase alternates
+between running MPC to attempt the task and collect data under
+full state observation, and using this data to train a neural network
+policy that chooses actions based only on the vehicle’s onboard
+sensors. At test time, the neural network does not need the full
+state, and can control the vehicle in unstructured environments.
+
+(MPC) scheme to train policies for autonomous aerial vehi-
+cles in a way that avoids catastrophic failure at training time.
+Guided policy search transforms RL into supervised learning,
+where the ﬁnal control policy is trained with supervised
+learning, and the supervision is provided by an optimal
+control algorithm. Typically, this optimal control algorithm
+is an ofﬂine trajectory optimization procedure, which either
+assumes a known model of the dynamics [20] or uses an
+iteratively learned model [18]. Both approaches are prone
+to failure during training, since the known model may be
+inaccurate, and the learned model is always inaccurate during
+the early stages of learning. By substituting MPC for ofﬂine
+trajectory optimization, we can obtain variant of guided
+policy search that is robust to moderate model errors, and
+thus avoid catastrophic failures during training. Furthermore,
+since the ﬁnal policy is trained with supervised learning, we
+can obtain complex, high-dimensional, and highly nonlinear
+policies, such as deep neural networks, which can represent
+a wide range of complex behaviors.
+
+One might wonder why the guided policy search method
+is necessary if we already have access to an effective MPC
+procedure. In the case of autonomous aerial vehicles, training
+deep neural network policies with guided policy search
+affords us two main advantages. First, the neural network
+policy does not need to use the same inputs as MPC. In fact,
+
+we can restrict its inputs to only those observations that are
+directly available from the vehicle’s onboard sensors, such
+as IMU readings and data from laser range ﬁnders, while the
+MPC training phase uses the true state of the system. Since
+the policy is represented by a deep neural network, it can
+even process complex, raw sensor information. For example,
+prior work has shown that guided policy search can learn
+policies that directly use camera images [22]. Since MPC is
+only used at training time, we can employ an instrumented
+training setup, where the full state is known at training time
+(e.g. using motion capture), but unavailable at test time.
+This instrumented training setup is one of the key beneﬁts
+of our approach, since it allows for safe training with full
+state information, but still produces a policy that uses raw
+sensor readings and does not require explicit state estimation.
+The second beneﬁt of this approach is that the ﬁnal neural
+network policy is computationally much less expensive than
+MPC, and can be easily parallelized on specialized hardware.
+This advantage combines elegantly with the instrumented
+training setup, since the MPC solution can be computed
+offboard during training, while all policy computations may
+be performed onboard at test time.
+
+Our main contribution is an MPC-guided policy search
+algorithm that can be used for learning control policies
+for autonomous aerial vehicles. This algorithm, illustrated
+in Figure 1, replaces the ofﬂine trajectory optimization
+that is typically used in guided policy search with online
+MPC, which continuously replans paths to the goal from
+the vehicle’s current state using an approximate model of
+the dynamics. Our modiﬁed MPC procedure also takes into
+account the actions that would be taken at each state by
+the current neural network in order to avoid actions that the
+network is unlikely to take. This ensures that, at convergence,
+the neural network achieves good long-horizon performance,
+despite being trained only with supervised learning. Our
+approach allows us to learn neural network policies that
+directly process raw observations from the vehicle’s onboard
+sensors, and are substantially faster to evaluate at test time
+than full MPC solutions. We demonstrate our method on a
+set of simulated quadrotor control tasks, including obstacle
+avoidance using simulated laser range sensors. We show that
+our approach can learn policies that are robust to a variety
+of perturbations and generalize successfully to large obstacle
+courses, without catastrophic failure during training.
+
+II. RELATED WORK
+
+Model predictive control (MPC) is an efﬁctive and pop-
+ular technique for control of robotic systems, and is fre-
+quently used to control autonomous aerial vehicles such
+as quadrotors [36], [33], [32], [3], [2], [4], [28]. MPC is
+straightforward to apply when the state of the system is
+known (e.g. via a motion capture system), or when it can be
+measured accurately through sensors with well-understood
+observation models. However, vehicles navigating complex,
+unstructured environments must use more complex sensors,
+such as cameras and laser range ﬁnders. Incorporating such
+sensors into optimal control directly is challenging, since the
+
+sensor reading depends on a complex and often unknown
+environment. This challenge is conventionally addressed by
+using localization and mapping algorithms to map out the
+environment [9], and then optimizing trajectories under the
+resulting map [11]. However,
+this kind of model-based
+approach is quite challenging when the vehicle is moving
+at high speed, or when onboard computation is limited.
+
+On the other end of the spectrum from such model-based
+methods, reinforcement learning (RL) aims to directly learn
+control policies that map observations to controls [5]. This
+approach in principle removes the need for explicit state
+estimation and extensive computation at test time, by using
+a number of training episodes to iteratively improve the
+policy from real-world experience. RL has been used to train
+robotic controllers for games such as ball-in-cup and table
+tennis [15], manipulation [29], [6], and robotic locomotion
+[16], [38], [10], [8]. An overview of recent reinforcement
+learning methods in robotics can be found in a recent survey
+paper [14]. However, model-free RL is difﬁcult to apply
+to underactuated systems such as quadrotors, due to the
+possibility of catastrophic failure during training. Model-
+based RL can mitigate this problem by training a model from
+real-world experience, and then optimizing the policy under
+this model. While such methods have been successfully
+applied to aerial vehicles [1], [27], the requirement to be
+able to acquire an accurate model means that these methods
+share many of the challenges of MPC methods.
+
+In this work, we use an off-policy reinforcement learning
+method called guided policy search, which incorporates the
+advantages of model-based methods at training time, while
+still training the policy to use only the onboard sensors
+of the robot, without explicit state estimation and using
+only real-world data. Guided policy search has been applied
+to locomotion [20], robotic manipulation [21], and vision-
+based robotic control [22], but all prior applications rely
+on an ofﬂine trajectory optimization phase to generate the
+controller that is then executed on the real system. While this
+ofﬂine optimization might use a learned model of the system
+dynamics [18], the resulting trajectory-centric controller is
+only adapted between episodes. This makes these methods
+liable to fail catastrophically when the model is inaccurate.
+We replace the ofﬂine trajectory optimization in guided
+policy search with MPC, which prevents catastrophic failures
+even during training, making the method suitable for learning
+policies for autonomous aerial vehicles.
+
+One of the key advantages of guided policy search is
+its ability to train complex, high-dimensional, and highly
+nonlinear policies [19]. This allows us to use deep neural
+network representations for our policies, thus allowing them
+to handle complex, raw input from onboard sensors, without
+extensive engineering of the policy parameterization. While
+neural networks have been used for control for decades [12],
+[31], limitations on computation and algorithms have made
+large neural network policies very difﬁcult to learn. More
+recently, deep neural network policies have been used for
+tasks ranging from robotic control [21], [22] to video game
+playing [26]. Deep neural networks have also been used to
+
+Algorithm 1 Generic guided policy search summary
+1: for iteration k = 1 to K do
+2:
+
+i } from each pi(τ )
+
+optimize trajectory distributions pi(τ ) to minimize
+Epi[(cid:96)(τ )] and deviation from the policy πθ(ut|ot)
+generate samples {τ j
+train nonlinear policy πθ(ut|ot) to match the sampled
+trajectories {τ j
+i }
+update Lagrange multipliers to encourage agreement
+between pi(ut|xt) and πθ(ut|xt)
+
+3:
+4:
+
+5:
+
+6: end for
+7: return optimized policy parameters θ
+
+learn models for MPC [17]. In this paper, we use neural
+networks to represent the policy, rather than the model, while
+MPC is used to help train this policy.
+
+III. PRELIMINARIES
+
+cost Eπθ [(cid:80)T
+
+t=1 (cid:96)(xt, ut)] with respect
+
+The goal of policy search is to minimize the expected
+to the parameters
+θ of a policy πθ(ut|ot). Here, xt denotes the state at
+time t, ot denotes the observation, ut is the action, and
+(cid:96)(xt, ut) is the cost function that deﬁnes the task. For
+example, a task that requires a quadrotor to ﬂy to a po-
+sition might have the cost be the distance between the
+vehicle and the goal. The expectation is taken with re-
+t=1 p(xt+1|xt, ut)πθ(ut|xt), where
+τ = {x1, u1, . . . , xT , uT} denotes a trajectory. The observa-
+tion ot is distributed according to some observation distri-
+bution p(ot|xt), which describes how the readings from the
+robot’s sensors depend on the state.
+
+spect to p(τ ) = p(x1)(cid:81)T
+
+Optimal control also seeks to solve problems of this
+type, under various assumptions about
+the dynamics
+p(xt+1|xt, ut), observation function p(ot|xt), and policy.
+For example, the differential dynamic programming (DDP)
+algorithm can be viewed as approximately optimizing the ex-
+pected cost under a locally linear-Gaussian dynamics model
+and with time-varying linear [13], [23] or linear-Gaussian
+[19] policies that act directly on the state (i.e. ot = xt).
+While this method is not as general as policy gradient
+RL algorithms, which can optimize arbitrary parameterized
+policies with arbitrary observations under unknown dynamics
+[30], it is fast, simple, and often effective [37]. In order
+to combine the efﬁciency of DDP with the ﬂexibility of
+general policy search methods, guided policy search uses
+DDP-like algorithms to solve the control problem from a
+variety of initial conditions and generate training data for
+arbitrary parameterized policies, which are then trained with
+supervised learning to mimic the behavior of the DDP
+solutions [19], [18].
+
+Algorithm 1 presents a generic guided policy search
+method, where trajectory optimization is used to optimize
+a set of guiding trajectory distributions pi(τ ), deﬁned by the
+corresponding linear-Gaussian controllers pi(ut|xt), and an
+arbitrary nonlinear policy πθ(ut|ot) is trained using samples
+from all of these controllers. Since supervised learning
+the policy πθ(ut|ot)
+does not
+
+in general guarantee that
+
+will achieve good long-horizon performance, guided policy
+search alternates between optimizing the policy and optimiz-
+ing each of the trajectory distributions, each time adjusting
+the trajectory cost and the policy optimization objective to
+ensure that the linear-Gaussian controllers pi(ut|xt) and pol-
+icy πθ(ut|ot) converge to the same behavior. The objective
+for trajectory optimization is modiﬁed by adding a penalty
+for the deviation from the policy, and the policy objective is
+modiﬁed by applying different weights to different samples
+[18] or using dual variables [22]. Convergence to a policy
+πθ(ut|ot) that minimizes expected cost can be shown by
+casting this alternating optimization as a relaxation of a
+constrained optimization problem of the form
+
+Ep[(cid:96)(τ )]
+
+min
+θ,p
+s.t. p(ut|xt) = πθ(ut|xt) ∀t, xt, ut,
+
+where (cid:96)(τ ) is shorthand for (cid:80)T
+shorthand for(cid:82) πθ(ut|ot)p(ot|xt)dot, and p(τ ) is a mixture
+
+t=1 (cid:96)(xt, ut), πθ(ut|xt) is
+of the guiding distributions pi(τ ). This constrained prob-
+lem can be approximately transformed into the alternating
+optimization in Algorithm 1 by using sampling over the
+observations ot together with the framework of dual gradient
+descent [18] or BADMM [22]. In this paper, we use the
+BADMM version, which speciﬁes the following objective
+for trajectory optimization:
+
+Epi(xt,ut)[(cid:96)(xt, ut) − uT
+t λi
+
+µt+
+
+t=1
+
+tDKL(pi(ut|xt)(cid:107)πθ(ut|xt))],
+νi
+
+(1)
+
+where λµt is a Lagrange multiplier on the mean action,
+and the third term is a KL-divergence penalty. Together,
+these terms serve to keep pi(ut|xt) close to πθ(ut|xt). The
+supervised objective for the policy is similarly given by
+
+T(cid:88)
+
+min
+pi(τ )
+
+N(cid:88)
+
+M(cid:88)
+
+T(cid:88)
+
+i=1
+
+j=1
+
+t=1
+
+min
+
+θ
+
+tDKL(πθ(ut|oi,j
+[νi
+
+t )(cid:107)p(ut|xi,j
+
+t ))+
+
+Eπθ(ut|oi,j
+
+t )[ut]Tλi
+
+µt],
+
+(2)
+
+(cid:82) πθ(ut|ot)p(ot|xt)dot and, in the case where the policy is
+
+where M is the number of samples collected from each
+pi(τ ). This objective uses samples to estimate the integral
+given by the Gaussian N (µπ(ot), Σπ), it corresponds to a
+weighted least squares objective on the mean µπ(ot), while
+Σπ can be solved for in closed form. For a detailed derivation
+of this method, as well as the update equations for νi
+t and
+µt, we refer the reader to previous work [22]. Note that
+λi
+the policy πθ(ut|ot) only uses the observations ot as input,
+which means that, once it has been trained, it can be used
+in situations where the true state xt is unknown.
+
+Prior guided policy search methods optimized the guid-
+ing trajectory distributions pi(τ ) using either ofﬂine tra-
+jectory optimization with known system dynamics [20], or
+trajectory-centric reinforcement learning [18]. The former
+class of methods assumes that the true dynamics are known
+in advance, while the latter requires iteratively learning
+
+the dynamics by attempting to run potentially suboptimal
+controllers on the real physical system. In the case of under-
+actuated systems, such as autonomous aerial vehicles, neither
+approach is ideal, since the true dynamics are not known
+perfectly, and the suboptimal controller rollouts required for
+reinforcement learning might cause catastrophic failure, such
+as a crash. On the other hand, model predictive control
+methods that continuously recompute the vehicle’s trajectory
+under an approximate model of the dynamics have been
+shown to exhibit good robustness to model errors [37]. In
+the next section, we discuss how MPC can be combined
+with guided policy search to learn effective control policies.
+
+IV. MPC-GUIDED POLICY SEARCH
+
+In this paper, we use model predictive control together
+with ofﬂine trajectory optimization to generate guiding sam-
+ples for guided policy search. We assume that we have
+access to an approximate model of the system dynamics,
+which we use during training to choose actions that will
+accomplish the desired task, starting from a variety of initial
+states. These samples are then used as training data to train a
+nonlinear policy πθ(ut|ot), and this policy is included in the
+cost function for the next batch of samples. By repeatedly
+collecting new samples and training the policy πθ(ut|ot) in
+this way, the method can acquire an effective nonlinear policy
+that generalizes to new states.
+
+This method is a special case of the generic guided policy
+search framework presented in Algorithm 1, but a number
+of modiﬁcations are necessary to adapt
+the approach to
+use MPC to generate the guiding trajectory distributions.
+First, the MPC procedure must minimize the objective in
+Equation (1), which means that it must also minimize de-
+viation from the neural network policy. Second, each MPC
+rollout produces a different locally linear controller, which
+necessitates a modiﬁcation to the supervised policy learning
+phase. Lastly, since MPC uses a relatively short horizon,
+we generate target trajectories using an ofﬂine trajectory
+optimization phase, and then track these trajectories. We
+develop a formulation for this tracking objective that
+is
+compatible with guided policy search.
+
+A. Model Predictive Control with DDP
+
+The MPC method we use is based on differential dynamic
+programming (DDP) [13]. In particular, we use an efﬁcient
+variant of this method called iterative LQG, which assumes
+access to an approximate model of the system dynamics and
+uses a local linear-quadratic expansion to solve the optimal
+control problem. We summarize the method in this section.
+However, our derivation largely follows prior work [39].
+Iterative LQG assumes that the dynamics are given by
+a deterministic mean function f (xt, ut) = E[xt+1|xt, ut],
+with additive Gaussian noise. The algorithm computes a
+linear expansion of the dynamics around a nominal
+tra-
+jectory ˆτ = {ˆx1, ˆu1, . . . , ˆxT , ˆuT}, as well as a quadratic
+expansion of the cost. Without loss of generality, we as-
+sume that
+the nominal states and actions are zero for
+notational convenience. The linearized dynamics have the
+
+[xt; ut]T ˜(cid:96)xu,xut[xt; ut]+[xt; ut]T ˜(cid:96)xut+const,
+
+form p(xt+1|xt, ut) = N (fxtxt + futut + fct, Ft), and the
+quadratic cost approximation has the form
+˜(cid:96)(xt, ut) ≈ 1
+2
+where subscripts denote derivatives, e.g. ˜(cid:96)xut is the gradient
+of ˜(cid:96) with respect to [xt; ut], while ˜(cid:96)xu,xut is the Hessian.
+Note that ˜(cid:96) is not the same as the overall task, and we
+describe the differences in the next section. Under this model
+of the dynamics and cost function, the optimal policy can be
+computed by recursively computing the quaratic Q-function
+and value function, starting with the last time step. These
+functions are given by
+
+V (xt) =
+
+xT
+t Vx,xtxt + xT
+
+t Vxt + const
+
+1
+2
+1
+2
+
+Q(xt, ut) =
+We can express them with the following recurrence:
+
+[xt;ut]TQxu,xut[xt;ut]+[xt;ut]TQxut +const
+
+Qxu,xut = ˜(cid:96)xu,xut + f T
+
+xutVx,xt+1fxut
+
+Qxut = ˜(cid:96)xut + f T
+Vx,xt = Qx,xt − QT
+Vxt = Qxt − QT
+
+xutVxt+1
+u,xtQ−1
+u,xtQ−1
+
+u,utQu,xt
+
+u,utQut,
+
+law as
+which allows us to compute the optimal control
+g(xt) = ˆut + kt + Kt(xt − ˆxt), where Kt = −Q−1
+u,utQu,xt
+and kt = −Q−1
+u,utQut. Performing a forward rollout using
+this control law allows us to ﬁnd a new nominal trajectory,
+and the backward dynamic programming pass is repeated
+around this trajectory to take the next Gauss-Newton step.
+To adapt DDP for performing MPC, we simply run the
+algorithm for a shorter horizon H at each time time step t,
+so that the backward pass is performed from time step t to
+t + H. The initial nominal trajectory ˆτ is initialized from the
+ofﬂine LQG solution, as opposed to warm-starting using the
+previous MPC solution, which was prone to local minima
+due to obstacles.
+B. Adapting MPC for Guided Policy Search
+
+While we could simply adapt the DDP-based MPC algo-
+rithm in the previous section to optimize Equation 1, the
+short horizon typically used in MPC makes it difﬁcult to
+accomplish complex tasks like obstacle avoidance, which
+require long-horizon lookahead, with only a high-level spec-
+iﬁcation of the task, such as a desired ﬂight direction and
+an obstacle collision penalty. Instead, we use an ofﬂine
+optimization based on iterative LQG [23] to ﬁrst generate
+a reference trajectory, and then track this trajectory using
+MPC, with an additional term to account for differences from
+the neural network policy πθ(ut|ot).
+
+Ofﬂine, we run iterative LQG with our known approximate
+model to optimize Equation 1. Since Equation 1 contains a
+KL-divergence term, the objective can be rewritten as
+
+T(cid:88)
+
+t=1
+
+min
+pi(τ )
+
+Epi(xt,ut)
+
+(cid:20) 1
+
+(cid:96)(xt, ut)− 1
+νi
+νi
+t
+t
+H(pi(ut|xt))
+
+(cid:21)
+
+uT
+t λi
+
+µt−log πθ(ut|xt)−
+
+(3)
+
+,
+
+and this maximum entropy objective can be optimized with
+iterative LQG. The solution is a linear-Gaussian controller
+of the form pi(ut|xt) = N (Ktxt + kt, Q−1
+u,ut), as shown
+in prior work [19]. Prior methods sample directly from
+the linear-Gaussian controller pi(ut|xt) [20], but since we
+would like to use MPC to robustly control the robot during
+the rollout, we instead construct a surrogate cost function
+˜(cid:96)(xt, ut) for MPC that will allow us to robustly generate
+trajectories that have high probability under pi(τ ).
+
+This surrogate cost should fulﬁll a number of criteria in
+order to be effective: ﬁrst, it must encourage MPC to visit
+states that have high probabiltiy under pi(τ ); second, it must
+produce good long-horizon behavior even when optimized
+under a short horizon; and third, it must keep the generated
+behavior close to the neural network policy πθ(ut|xt). When
+we run MPC at
+time step t from the current state xt,
+we ﬁrst compute pi(xt(cid:48)|xt) for each t(cid:48) ∈ [t + 1, t + H]
+under the known approximate dynamics and the time-varying
+linear-Gaussian controller obtained from the ofﬂine LQG
+optimization. Using µt(cid:48) and Σt(cid:48)
+to denote the mean and
+covariance of pi(xt(cid:48)|xt), we can compute these distributions
+according to the following recurrence:
+
+µt(cid:48)+1 =(cid:2)fxt(cid:48) fut(cid:48)(cid:3)(cid:20) µt(cid:48)
+Σt(cid:48)+1 =(cid:2)fxt(cid:48) fut(cid:48)(cid:3)(cid:20) Σt(cid:48)
+
+ˆut(cid:48) + kt(cid:48) + Kt(cid:48)(µt(cid:48) − ˆxt(cid:48))
+
+Σt(cid:48)KT
+t(cid:48)
+
+Kt(cid:48)Σt(cid:48) Q−1
+
+u,ut(cid:48) +Kt(cid:48)Σt(cid:48)KT
+t(cid:48)
+
+(cid:21)
+(cid:21)(cid:20)f T
+
+xt(cid:48)
+f T
+ut(cid:48)
+
+(cid:21)
+
++Ft(cid:48)
+
+The inuition here is that we would like to ﬁgure out which
+states the ofﬂine LQG solution would prefer to visit, in-
+dependently of the actions required to get to these states.
+This is important since, in the presence of model errors
+and perturbations, the nonlinear approximate model might
+indicate different actions when combined with MPC, but
+the overall distribution over states should remain similar.
+Once we obtain pi(xt+1, . . . , xt+H|xt), we can marginalize
+to obtain pi(xt(cid:48)) for each time step t(cid:48) ∈ [t + 1, t + H], and
+we then construct the surrogate cost as
+˜(cid:96)(xt(cid:48), ut(cid:48)) = − log pi(xt(cid:48)|xt)− νi
+
+µt(cid:48).
+(4)
+We then run MPC on this cost as described in the previous
+section to obtain a new linear-Gaussian controller for time
+step t of the form ˜pij(ut|xt) = N ( ˜Ktijxt + ˜ktij, ˜Q−1
+u,utij),
+and choose the action by sampling from this linear-Gaussian.
+The subscript ij here denotes the jth sample (generated via
+MPC) from the ith trajectory distribution.
+
+t(cid:48) log πθ(ut(cid:48)|xt(cid:48))− uT
+t(cid:48)λi
+
+While samples generated in this way are not exactly
+samples from pi(τ ), but rather samples from a distribution
+formed by the product of independent marginals at each time
+step, we found that the resulting algorithm was still able to
+produce good training data for the neural network in guided
+policy search. Furthermore, the additional information pro-
+vided by pi(xt(cid:48)|xt) allowed MPC to succeed in the presence
+of model errors and disturbances, even on tasks such as
+obstacle avoidance that require long-horizon lookahead.
+
+One last detail is that both the cost in Equation (4) and
+the ofﬂine optimization objective in Equation (3) require
+
+access to log πθ(ut|xt), while we only have access to
+log πθ(ut|ot), and ot is in general a complex and unknown
+function of xt, since the observation might include, e.g., laser
+rangeﬁnder readings, while the state might consist of the
+vehicle’s position and orientation. To obtain log πθ(ut|xt),
+we follow prior work and approximately linearize the policy
+by using the previous set of rollouts from the physical
+system. This can be done by ﬁtting a time-varying linear-
+Gaussian model of log πθ(ut|xt) to the samples, since each
+sample includes both xt and ot, allowing us to evaluate the
+policy at each sampled state xt. The ﬁtting is done by using
+linear regression with a Gaussian mixture model prior, as in
+previous work [18].
+
+C. Training the Nonlinear Policy
+
+The ﬁnal nonlinear policy πθ(ut|ot) is trained using
+standard supervised learning, from samples collected via
+MPC. The objective for this supervised learning is given in
+Equation (2), though in the case of MPC-based samples, we
+substitute out ˜pij(ut|xt) for pi(ut|xt). In the case of a con-
+ditionally Gaussian policy πθ(ut|ot) = N (µπ(ot), Σπ(ot)),
+the KL-divergence DKL(πθ(ut|oi,j
+t )) in this ob-
+jective can be written out as
+
+t )(cid:107)˜pij(ut|xi,j
+
+t )) =
+
+t )(cid:107)˜pij(ut|xi,j
+
+DKL(πθ(ut|oi,j
+(µπ(ot)−˜gtij(xt)) ˜Qu,utij(µπ(ot)−˜gtij(xt))−
+1
+2
+log |Σπ(ot)| + λT
+1
+2
+
+µtµπ(ot),
+
+1
+2
+
+tr[ ˜Qu,utijΣπ(ot)]+
+
+where ˜gtij(xt) = ˜Ktijxt + ˜ktij. Note that this is simply
+a weighted least squares objective on the mean function
+µπ(ot). In this work, we represent µπ(ot) with a multilayer
+neural network, which allows us to train ﬂexible and ex-
+pressive policies. Since we prefer deterministic or nearly-
+deterministic policies, we choose Σπ(ot) to be constant,
+which means that we can solve for it
+in closed form
+according to
+
+ 1
+
+N
+
+N(cid:88)
+
+M(cid:88)
+
+i=1
+
+j=1
+
+−1
+
+.
+
+Σπ(ot) =
+
+˜Qu,utij
+
+The neural network mean function µπ(ot) is optimized using
+stochastic gradient descent (SGD). As noted earlier, one of
+the key advantages of this type of training approach is that
+the input ot to the neural network policy need not match the
+state xt used during trajectory optimization and MPC, which
+allows us to train policies that operate directly on raw inputs
+from the onboard sensors.
+
+D. Algorithm Summary
+
+A summary of our method is presented in Algorithm 2.
+At each iteration, we ﬁrst generate an ofﬂine solution by
+using iterative LQG to optimize the augmented objective in
+Equation (3). This ofﬂine solution allows us to initialize and
+construct the cost for MPC rollouts. We conduct M MPC
+rollouts for each trajectory distribution pi(τ ), constructing a
+
+Algorithm 2 MPC-guided policy search
+1: for iteration k = 1 to K do
+2:
+3:
+
+optimize pi(τ ) ofﬂine according to Equation (3)
+run MPC M times from initial states x1 ∼ pi(x1) to
+create {˜pij(τ )} and {τij} using ˜(cid:96)(τ ) in Equation (4)
+train nonlinear policy πθ(ut|ot)
+to match each
+˜pij(ut|xt) along each τij, using Equation (2)
+ﬁt
+πθ(ut|xt) around each pi(τ ) using samples {τij}
+update νi
+
+time-varying linear-Gaussian model
+
+to estimate
+
+4:
+
+5:
+
+t and λi
+
+6:
+7: end for
+8: return optimized policy parameters θ
+
+µt as in [22]
+
+cylinder avoidance
+
+no model error
+
+0.5kg mass error
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+0
+
+0
+
+0
+
+50
+
+50
+
+0
+
+0/10
+
+0/10
+
+0/10
+
+6/10
+
+1/10
+
+0/10
+
+hallway ﬂight
+
+no model error
+
+0.5kg mass error
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+0
+
+22
+
+0
+
+15
+
+50
+
+0
+
+0/12
+
+12/12
+
+0/12
+
+12/12
+
+12/12
+
+0/12
+
+method
+
+training
+crashes
+(lower is
+better)
+policy
+crashes
+(lower is
+better)
+
+method
+
+training
+crashes
+(lower is
+better)
+policy
+crashes
+(lower is
+better)
+
+Fig. 2: The quadrotor must
+learn to ﬂy around a cylindrical
+obstacle and down a hallway using only onboard sensing. The blue
+semicircle is the range of the onboard laser range ﬁnders.
+
+new surrogate cost ˜(cid:96)(xt, ut) at each time step. These MPC
+rollouts provide us with sample trajectories {τij} and MPC
+controllers {˜pij(τ )}, which we can use to train the nonlinear
+neural network policy πθ(ut|ot) as described in the previous
+section. After the policy is trained, we update our time-
+varying linear-Gaussian ﬁt for πθ(ut|xt) by using the latest
+samples. Note that a separate linear-Gaussian estimate of
+πθ(ut|xt) is constructed around each trajectory distribution
+pi(τ ). Finally, we adjust the dual variables as described in
+previous work [22].
+
+V. EXPERIMENTAL EVALUATION
+
+We evaluated our method on simulated quadrotor obstacle
+avoidance tasks. The dynamics of the quadrotor in this
+simulated environment followed the formulation described
+by Martin and Salaun [24]. The true state of the vehicle
+xt consisted of the position and orientation, expressed as
+a quaternion, as well as their time derivatives, the controls
+ut consisted of motor velocities, and the observation model
+ot lacked the global (x, y) position and instead included
+readings from 60 laser range ﬁnders arranged in a 180 degree
+fan pattern in front of the vehicle. This type of observation
+model is quite challenging to integrate into simple control
+methods, such as time-varying linear controllers, but can
+easily be processed by a multilayer neural network policy.
+The tasks included ﬂying around a cylindrical obstacle
+and ﬂying down a hallway (Figure 2). Both policies were
+trained with 6 initial positions, with each initial position
+corresponding to a different
+trajectory distribution pi(τ ),
+with M = 4 samples per position.
+
+To evaluate the importance of using MPC, we trained
+neural network policies on each of the tasks in the presence
+
+TABLE I: Results for MPC-guided policy search for learning poli-
+cies for cylindrical obstacle avoidance and hallway ﬂight. The ﬁrst
+row for each task shows the total number of crashes experienced
+during training over three iterations of guided policy search. Trials
+ending in a crash were repeated until 50 crashes occured, at which
+point training was terminated. The second row for each task shows
+the number of crashes at test time for the neural network policy
+learned after three iterations(or fewer if too many crashes occurred
+during training). Our full MPC-guided policy search method was
+able to consistently learn the tasks without crashing during training,
+and acquired a successful policy.
+
+of model errors, using three variants: the full MPC-guided
+policy search algorithm with the surrogate cost ˜(cid:96)(xt, ut)
+described in Section IV-B , a variant of MPC-guided policy
+search that uses the true cost (cid:96)(xt, ut) with the policy KL-
+divergence term and dual variables for MPC, and a variant
+that does not use MPC at all, and instead performs the
+rollouts by using the time-varying linear-Gaussian policy
+generated by the ofﬂine iterative LQG algorithm. For the
+quadrotor model error, the actual weight of the quadrotor was
+0.05kg (3.3%) greater than the expected quadrotor weight.
+The performance of the resulting neural network policies
+are shown in Table I. Performance was evaluated by ini-
+tializing the vehicle in a range of random states not seen
+during training. This required the neural network policy to
+exhibit moderate generalization. The results indicate that
+using MPC during training is crucial for obtaining good
+results in the presence of model errors, and that the surrogate
+cost dramatically increases the success rate on tasks that
+require long-horizon lookahead, such as obstacle avoidance.
+Table I also shows the number of crashes experienced by the
+vehicle during training. These results indicate that MPC with
+a surrogate cost is able to train a successful neural network
+policy without experiencing catastrophic failure.
+
+To further evaluate the generalization of the learned poli-
+
+no model error
+
+method
+
+distance
+
+traveled (m)
+
+(baseline)
+
+ofﬂine
+(cid:96)(xt, ut)
+77.8 ±
+42.4
+
+(baseline)
+
+MPC
+(cid:96)(xt, ut)
+88.2 ±
+42.5
+
+full
+MPC
+˜(cid:96)(xt, ut)
+104.8 ±
+55.5
+
+inﬁnite forest
+
+0.5kg mass error
+
+(baseline)
+
+ofﬂine
+(cid:96)(xt, ut)
+11.2±
+1.2
+
+(baseline)
+
+MPC
+(cid:96)(xt, ut)
+15.0 ±
+4.2
+
+full
+MPC
+˜(cid:96)(xt, ut)
+46.0 ±
+20.6
+
+(baseline)
+
+ofﬂine
+(cid:96)(xt, ut)
+21.5 ±
+10.7
+
+with wind
+(baseline)
+
+MPC
+(cid:96)(xt, ut)
+14.9 ±
+7.3
+
+full
+MPC
+˜(cid:96)(xt, ut)
+19.5 ±
+10.2
+
+wind & mass error
+
+(baseline)
+
+ofﬂine
+(cid:96)(xt, ut)
+9.5 ±
+3.9
+
+(baseline)
+
+MPC
+(cid:96)(xt, ut)
+14.9±
+7.3
+
+full
+MPC
+˜(cid:96)(xt, ut)
+26.8 ±
+17.9
+
+no model error
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+0.5kg mass error
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+with wind
+(baseline)
+
+MPC
+
+wind & mass error
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+(baseline)
+
+ofﬂine
+
+(baseline)
+
+MPC
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+full
+MPC
+
+˜(cid:96)(xt, ut)
+
+inﬁnite hallway
+
+full
+MPC
+
+(baseline)
+
+ofﬂine
+
+˜(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+(cid:96)(xt, ut)
+
+12.67
+
+20.49
+
+12.67
+
+12.06
+
+N/A
+
+13.29
+
+37.56
+
+N/A
+
+41.55
+
+14.99
+
+N/A
+
+28.96
+
+method
+
+distance
+
+traveled (m)
+
+TABLE II: Generalization results for neural network policies trained using the full MPC-guided policy search method and the two baselines
+for the inﬁnite forest and inﬁnite hallway tasks, with various model errors and perturbations. In the majority of the experiments, the ﬁnal
+MPC-guided policy search method attains the best results. For the inﬁnite forest, obstacles are present roughly every 10 meters, so the
+total number of obstacles dodged is one tenth of the distance.
+
+cies, we ran the trained neural networks in semi-novel sce-
+narios. We ran the cylinder avoidance trained policies in an
+inﬁnite forest of cylinders, while we ran the trained policies
+for the ﬁnite hallway in an inﬁnite hallway. Results are shown
+in Table II. For no model errors, our MPC-guided policy
+search algorithm was comparable to the other methods.
+When wind or a mass error was introduced, our method
+outperformed the two baselines in a majority of the scenarios.
+Videos of the resulting ﬂights are included as supplementary
+material, and may also be viewed on the project webpage:
+http://rll.berkeley.edu/icra2016mpcgps.
+
+Our evaluation shows that MPC-guided policy search is an
+effective algorithm for off-policy training of complex neural
+network policies for autonomous aerial vehicles. Our full
+method was able to learn each of the two behaviors without
+experiencing any catastrophic failures during training, and
+the trained policy was able to generalize effectively.
+
+VI. DISCUSSION AND FUTURE WORK
+
+We presented an algorithm for training deep neural net-
+work control policies for autonomous aerial vehicles, by
+using model predictive control to generate guiding samples
+for guided policy search. Our MPC-guided policy search uses
+a modiﬁed MPC algorithm that trades off minimizing the cost
+against matching the current neural network policy, so as to
+generate good training data that can be used to train a better
+policy with standard supervised learning. Since the partially
+trained neural network policy is never used to choose actions
+at training time, the more robust and reliable MPC method
+provides a substantial improvement in safety over traditional
+reinforcement learning methods. Our results show that this
+algorithm is able to learn complex policies, such as high
+speed obstacle avoidance, using raw sensor inputs and low-
+level motor command outputs.
+
+One of the key ideas behind our method is the notion
+of an instrumented training setup, which allows MPC to be
+performed at training time with true state observations, which
+could be provided, for example, by using motion capture. At
+the same time, the vehicle gathers observations from its own
+
+onboard sensors, and trains the policy to mimic the action
+chosen by MPC using only the raw sensor readings, without
+relying on the full state. Acquiring the true sensor readings
+is important, because accurately modeling complex sensors,
+such as laser range ﬁnders and cameras, is very difﬁcult,
+while obtaining a model of the vehicle that
+is accurate
+enough to perform MPC is comparatively easier.
+
+While our approach can train very complex, high-
+dimensional policies, it shares many of the limitations of
+prior guided policy search methods [22]. In particular, full
+state observations are required at training time, in order
+to perform MPC, even though the ﬁnal neural network
+policy can perform the task using only onboard sensors.
+In the real world, this kind of state information could be
+obtained using an instrumented training environment (with,
+for example, motion capture). Since the instrumentation is
+only required during training, the ﬁnal neural network is still
+able to act in the real world, so this approach is practical
+for a wide range of robotic tasks. However, not all aerial
+maneuvers can be learned in such an instrumented training
+setup, and combining explicit state estimation with guided
+policy search in future work could lead to a much more
+broadly applicable algorithm. Another direction that can be
+explored in future work is to combine guided policy search
+with more sophisticated MPC and planning algorithms. In
+principle, a wide variety of methods can be used to generate
+guiding samples, and more sophisticated methods might
+afford superior robustness and obstacle avoidance [7].
+
+REFERENCES
+
+[1] P. Abbeel, A. Coates, M. Quigley, and A. Ng, “An application of
+reinforcement learning to aerobatic helicopter ﬂight,” in Advances in
+Neural Information Processing Systems (NIPS), 2006.
+
+[2] K. Alexis, G. Nikolakopoulos, and A. Tzes, “Model predictive quadro-
+tor control: attitude, altitude and position experimental studies,” Con-
+trol Theory Applications, IET, vol. 6, no. 12, pp. 1812–1827, Aug
+2012.
+
+[3] F. Augugliaro, A. P. Schoellig, and R. D’Andrea, “Generation of
+collision-free trajectories for a quadrocopter ﬂeet: A sequential convex
+programming approach,” in International Conference on Intelligent
+Robots and Systems (IROS), 2012.
+
+quadrocopter state interception,” in European Control Conference
+(ECC), 2013.
+
+[29] P. Pastor, H. Hoffmann, T. Asfour, and S. Schaal, “Learning and
+generalization of motor skills by learning from demonstration,” in
+International Conference on Robotics and Automation (ICRA), 2009.
+[30] J. Peters and S. Schaal, “Reinforcement learning of motor skills with
+policy gradients,” Neural Networks, vol. 21, no. 4, pp. 682–697, 2008.
+[31] D. Pomerleau, “ALVINN: an autonomous land vehicle in a neural
+network,” in Advances in Neural Information Processing Systems
+(NIPS), 1989.
+
+[32] G. V. Raffo, M. G. Ortega, and F. R. Rubio, “An integral predic-
+tive/nonlinear control structure for a quadrotor helicopter,” Automatica,
+vol. 46, no. 1, pp. 29 – 39, 2010.
+
+[33] A. G. Richards, “Robust constrained model predictive control,” Ph.D.
+
+dissertation, Massachusetts Institute of Technology, 2004.
+
+[34] S. Ross, G. Gordon, and A. Bagnell, “A reduction of imitation learning
+and structured prediction to no-regret online learning,” Journal of
+Machine Learning Research, vol. 15, pp. 627–635, 2011.
+
+[35] S. Ross, N. Melik-Barkhudarov, K. S. Shankar, A. Wendel, D. Dey,
+J. A. Bagnell, and M. Hebert, “Learning monocular reactive UAV
+control in cluttered natural environments,” in International Conference
+on Robotics and Automation (ICRA), 2013.
+
+[36] D. H. Shim, H. J. Kim, and S. Sastry, “Nonlinear model predictive
+tracking control for rotorcraft-based unmanned aerial vehicles,” in
+American Control Conference (ACC), 2002.
+
+[37] Y. Tassa, T. Erez, and E. Todorov, “Synthesis and stabilization of com-
+plex behaviors through online trajectory optimization,” in IEEE/RSJ
+International Conference on Intelligent Robots and Systems, 2012.
+
+[38] R. Tedrake, T. Zhang, and H. Seung, “Stochastic policy gradient rein-
+forcement learning on a simple 3d biped,” in International Conference
+on Intelligent Robots and Systems (IROS), 2004.
+
+[39] E. Todorov, T. Erez, and Y. Tassa, “MuJoCo: A physics engine
+for model-based control,” in IEEE/RSJ International Conference on
+Intelligent Robots and Systems, 2012.
+
+[4] P. Bouffard, A. Aswani, and C. Tomlin, “Learning-based model predic-
+tive control on a quadrotor: Onboard implementation and experimental
+results,” in International Conference on Robotics and Automation
+(ICRA), 2012.
+
+[5] M. Deisenroth, G. Neumann, and J. Peters, “A survey on policy search
+for robotics,” Foundations and Trends in Robotics, vol. 2, no. 1-2, pp.
+1–142, 2013.
+
+[6] M. Deisenroth, C. Rasmussen, and D. Fox, “Learning to control a
+low-cost manipulator using data-efﬁcient reinforcement learning,” in
+Robotics: Science and Systems (RSS), 2011.
+
+[7] R. Deits and R. Tedrake, “Efﬁcient mixed-integer planning for UAVs
+in cluttered environments,” in International Conference on Robotics
+and Automation (ICRA), 2015.
+
+[8] G. Endo, J. Morimoto, T. Matsubara, J. Nakanishi, and G. Cheng,
+“Learning CPG-based biped locomotion with a policy gradient
+method: Application to a humanoid robot,” International Journal of
+Robotic Research, vol. 27, no. 2, pp. 213–228, 2008.
+
+[9] F. Fraundorfer, L. Heng, D. Honegger, G. Lee, L. Meier, P. Tanskanen,
+and M. Pollefeys, “Vision-based autonomous mapping and exploration
+using a quadrotor mav,” in International Conference on Intelligent
+Robots and Systems (IROS), 2012.
+
+[10] T. Geng, B. Porr, and F. W¨org¨otter, “Fast biped walking with a
+reﬂexive controller and realtime policy searching,” in Advances in
+Neural Information Processing Systems (NIPS), 2006.
+
+[11] L. Heng, L. Meier, P. Tanskanen, F. Fraundorfer, and M. Pollefeys,
+“Autonomous obstacle avoidance and maneuvering on a vision-guided
+mav using on-board processing,” in International Conference on
+Robotics and Automation (ICRA), 2011.
+
+[12] K. J. Hunt, D. Sbarbaro, R. ˙Zbikowski, and P. J. Gawthrop, “Neural
+networks for control systems: A survey,” Automatica, vol. 28, no. 6,
+pp. 1083–1112, Nov. 1992.
+
+[13] D. Jacobson and D. Mayne, Differential Dynamic Programming.
+
+Elsevier, 1970.
+
+[14] J. Kober, J. A. Bagnell, and J. Peters, “Reinforcement learning in
+robotics: A survey,” International Journal of Robotic Research, vol. 32,
+no. 11, pp. 1238–1274, 2013.
+
+[15] J. Kober, E. Oztop, and J. Peters, “Reinforcement learning to adjust
+robot movements to new situations,” in Robotics: Science and Systems
+(RSS), 2010.
+
+[16] N. Kohl and P. Stone, “Policy gradient reinforcement learning for fast
+quadrupedal locomotion,” in International Conference on Robotics and
+Automation (IROS), 2004.
+
+[17] I. Lenz, R. Knepper, and A. Saxena, “Deepmpc: Learning deep
+latent features for model predictive control,” in Robotics: Science and
+Systems (RSS), 2015.
+
+[18] S. Levine and P. Abbeel, “Learning neural network policies with
+guided policy search under unknown dynamics,” in Advances in Neural
+Information Processing Systems (NIPS), 2014.
+
+[19] S. Levine and V. Koltun, “Guided policy search,” in International
+
+Conference on Machine Learning (ICML), 2013.
+
+[20] ——, “Learning complex neural network policies with trajectory opti-
+mization,” in International Conference on Machine Learning (ICML),
+2014.
+
+[21] S. Levine, N. Wagener, and P. Abbeel, “Learning contact-rich manip-
+ulation skills with guided policy search,” in International Conference
+on Robotics and Automation (ICRA), 2015.
+
+[22] S. Levine, C. Finn, T. Darrell, and P. Abbeel, “End-to-end training of
+
+deep visuomotor policies,” arXiv preprint arXiv:1504.00702, 2015.
+
+[23] W. Li and E. Todorov, “Iterative linear quadratic regulator design for
+nonlinear biological movement systems,” in ICINCO (1), 2004, pp.
+222–229.
+
+[24] P. Martin and E. Salaun, “The true role of accelerometer feedback
+in quadrotor control,” in International Conference on Robotics and
+Automation (ICRA), 2010.
+
+[25] D. Q. Mayne, M. M. Seron, and S. V. Rakovi´c, “Robust model predic-
+tive control of constrained linear systems with bounded disturbances,”
+Automatica, vol. 41, no. 2, Feb. 2005.
+
+[26] V. Mnih, K. Kavukcuoglu, D. Silver, A. Graves, I. Antonoglou,
+D. Wierstra, and M. Riedmiller, “Playing Atari with deep reinforce-
+ment learning,” NIPS ’13 Workshop on Deep Learning, 2013.
+
+[27] F. L. Mueller, A. P. Schoellig, and R. D’Andrea, “Iterative learning
+of feed-forward corrections for high-performance tracking,” in Inter-
+national Conference on Intelligent Robots and Systems (IROS), 2012.
+[28] M. Mueller and R. D’Andrea, “A model predictive controller for
+
+
